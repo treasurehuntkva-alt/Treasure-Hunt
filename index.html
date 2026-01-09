@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Treasure Hunt Καβάλα — Το 1ο Παιχνίδι στην Καβάλα</title>
+  <meta name="description" content="Treasure Hunt Καβάλα — το 1ο παιχνίδι πόλης στην Καβάλα. Δήλωσε 2 ομάδες, διάλεξε ημερομηνία/ώρα και μπες στην αποστολή." />
+  <meta name="theme-color" content="#0b0f1a" />
+
+  <style>
+    :root{
+      --bg:#070A12;
+      --text:#EAF0FF;
+      --muted: rgba(234,240,255,.70);
+      --line: rgba(255,255,255,.10);
+      --accent:#7C5CFF;
+      --accent2:#22D3EE;
+      --ok:#2DD4BF;
+      --bad:#FB7185;
+      --shadow: 0 18px 60px rgba(0,0,0,.40);
+      --radius: 18px;
+      --radius2: 26px;
+      --max: 1200px;
+
+      /* ✅ ΒΑΖΕΙΣ ΕΔΩ ΤΗ ΦΩΤΟ ΜΙΑ ΦΟΡΑ
+         1) Βάλε την εικόνα (π.χ. hero.jpg ή hero.png) ΣΤΟΝ ΙΔΙΟ ΦΑΚΕΛΟ με το HTML.
+         2) Άλλαξε εδώ το όνομα αρχείου: */
+      --brandPhoto: url("./fb40211b-ae5e-4fa2-ac76-e8da66f03a85.png");
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(900px 500px at 15% 10%, rgba(124,92,255,.22), transparent 55%),
+        radial-gradient(800px 460px at 85% 20%, rgba(34,211,238,.18), transparent 60%),
+        radial-gradient(700px 460px at 40% 95%, rgba(45,212,191,.14), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100svh;
+    }
+
+    a{color:inherit; text-decoration:none}
+    .container{max-width: var(--max); margin:0 auto; padding: 0 20px}
+
+    /* όταν πατάς στο menu να μη “κόβεται” κάτω από το sticky nav */
+    section{ scroll-margin-top: 92px; padding: 24px 0; }
+
+    .pill{
+      display:inline-flex; gap:10px; align-items:center;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
+      backdrop-filter: blur(10px);
+    }
+    .dot{width:8px;height:8px;border-radius:99px;background:linear-gradient(45deg,var(--accent),var(--accent2))}
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      color: var(--text);
+      box-shadow: 0 14px 45px rgba(0,0,0,.25);
+      cursor:pointer;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+      user-select:none;
+      white-space: nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.18) }
+    .btn.primary{
+      border: 1px solid rgba(124,92,255,.45);
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(34,211,238,.55));
+      box-shadow: 0 18px 55px rgba(124,92,255,.25);
+    }
+
+    /* NAV */
+    .nav{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(7,10,18,.55);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(14px);
+    }
+    .nav-inner{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 14px 0;
+      gap: 14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      min-width: 0;
+    }
+    .brand small{
+      display:block;
+      font-weight: 600;
+      color: rgba(234,240,255,.65);
+      font-size: 12px;
+      letter-spacing: .3px;
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 42vw;
+    }
+    .brand-badge{
+      width:36px;height:36px;border-radius: 12px;
+      background:
+        radial-gradient(14px 14px at 30% 30%, rgba(255,255,255,.45), transparent 65%),
+        linear-gradient(135deg, rgba(124,92,255,.16), rgba(34,211,238,.10)),
+        var(--brandPhoto) center / cover no-repeat;
+      box-shadow: 0 12px 35px rgba(124,92,255,.22);
+      border:1px solid rgba(255,255,255,.10);
+      flex: 0 0 36px;
+    }
+    .nav-links{
+      display:flex; gap: 10px; align-items:center;
+      color: var(--muted);
+      font-size: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .nav-links a{ padding:8px 10px; border-radius: 12px }
+    .nav-links a:hover{ background: rgba(255,255,255,.06); color: var(--text) }
+
+    /* HERO (1 μεγάλος πίνακας) */
+    .hero{ padding: 26px 0 10px; }
+    .hero-wide{
+      position:relative;
+      border-radius: var(--radius2);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: var(--shadow);
+      min-height: 580px; /* ✅ λίγο πιο μεγάλο */
+      background: #0b0f1a;
+    }
+
+    /* overlay / gradients */
+    .hero-wide::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        linear-gradient(90deg, rgba(7,10,18,.92) 0%, rgba(7,10,18,.64) 55%, rgba(7,10,18,.12) 100%);
+      pointer-events:none;
+      z-index:1;
+    }
+    .hero-wide::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(820px 420px at 18% 28%, rgba(124,92,255,.32), transparent 62%),
+        radial-gradient(680px 420px at 75% 55%, rgba(34,211,238,.20), transparent 66%),
+        radial-gradient(620px 420px at 48% 90%, rgba(0,0,0,.35), transparent 62%);
+      mix-blend-mode: screen;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    /* ✅ Εικόνα ΜΟΝΟ στο 1ο πλαίσιο ως IMG */
+    .hero-media{
+      position:absolute;
+      inset:0;
+      z-index:0;
+      width:100%;
+      height:100%;
+    }
+    .hero-media img{
+      width:100%;
+      height:100%;
+      display:block;
+
+      /* ✅ Για “να φαίνεται ΟΛΟΚΛΗΡΗ”: */
+      object-fit: cover;
+      object-position: center 40%; /* ✅ “λίγο πιο πάνω” (35%). Βάλε 30% / 25% αν τη θες πιο πάνω. */
+
+      background: #0b0f1a; /* για να μη φαίνονται κενά άσχημα όταν είναι contain */
+      transform: scale(1.02);
+      filter: saturate(1.03) contrast(1.10);
+    }
+
+    .hero-content{
+      position:relative;
+      z-index:2;
+      padding: 26px;
+      height: 100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap: 18px;
+    }
+    .hero-title{
+      font-size: clamp(26px, 3.8vw, 54px);
+      line-height: 1.05;
+      margin: 12px 0 10px;
+      letter-spacing: -0.6px;
+    }
+    .hero-sub{
+      color: rgba(234,240,255,.80);
+      font-size: 16px;
+      line-height: 1.55;
+      max-width: 70ch;
+      margin: 0;
+    }
+
+    /* ✅ ΑΦΑΙΡΕΣΗ 2 ΚΟΥΜΠΙΩΝ ΠΑΝΩ ΑΠΟ ΤΑ 3 ΠΙΝΑΚΑΚΙΑ
+       Δεν βάζουμε hero-actions καθόλου. */
+
+    .hero-mini{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 80px;
+      max-width: 980px;
+  
+    }
+    .mini{
+      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.06);
+      border-radius: 16px;
+      padding: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .mini b{ display:block; font-size: 14px; margin-bottom: 6px }
+    .mini span{ color: var(--muted); font-size: 13px; line-height: 1.35 }
+
+    .notice{
+      display:flex; gap:10px; align-items:flex-start;
+      padding: 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 12px;
+      max-width: 980px;
+    }
+    .notice .i{
+      width: 22px; height: 22px;
+      border-radius: 8px;
+      display:grid; place-items:center;
+      flex: 0 0 22px;
+      background: rgba(34,211,238,.20);
+      border:1px solid rgba(34,211,238,.30);
+      color: var(--text);
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    /* CARD / FORM */
+    .card{
+      border: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card-pad{ padding: 18px; }
+
+    form{ margin-top: 10px }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    label{ display:block; font-size: 13px; color: rgba(234,240,255,.78); margin: 10px 0 6px }
+    input, textarea, select{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      outline:none;
+      transition: border-color .15s ease, transform .15s ease;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(124,92,255,.55);
+      box-shadow: 0 0 0 4px rgba(124,92,255,.14);
+    }
+    textarea{ min-height: 110px; resize: vertical }
+    .help{ font-size:12px; color: rgba(234,240,255,.55); margin-top: 6px; line-height: 1.45 }
+    .divider{ height:1px; background: rgba(255,255,255,.10); margin: 14px 0; }
+
+    .feature{
+      padding: 16px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.05);
+    }
+
+    /* FAQ */
+    details{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+    details + details{ margin-top: 10px }
+    summary{ cursor:pointer; list-style:none; font-weight: 800; }
+    summary::-webkit-details-marker{display:none}
+    details p{ margin: 10px 0 0; color: var(--muted); line-height:1.55; font-size: 14px }
+
+    /* Contact */
+    .contact-grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .contact-item{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      border-radius: 18px;
+      padding: 14px;
+    }
+    .contact-item b{ display:block; margin-bottom: 6px }
+    .contact-item p{ margin:0; color: var(--muted); line-height:1.6; font-size: 14px }
+    .contact-actions{ display:flex; gap:10px; flex-wrap: wrap; margin-top: 12px; }
+
+    footer{
+      padding: 26px 0 34px;
+      color: rgba(234,240,255,.55);
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      margin-top: 18px;
+    }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,14,24,.85);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      color: var(--text);
+      max-width: 380px;
+      display:none;
+      z-index: 99;
+    }
+    .toast.show{ display:block; animation: pop .22s ease-out }
+    @keyframes pop { from { transform: translateY(8px); opacity:.0 } to { transform: translateY(0); opacity:1 } }
+
+    /* Responsive */
+    @media (max-width: 920px){
+      .nav-links{ display:none; }
+      .hero-mini{ grid-template-columns: 1fr; max-width: 560px; }
+      .contact-grid{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 740px){
+      .container{ padding: 0 14px; }
+      .hero-content{ padding: 18px; }
+      .card-pad{ padding: 14px; }
+      section{ padding: 20px 0; }
+    }
+    @media (max-width: 600px){
+      .row{ grid-template-columns:1fr; }
+      .btn{ width: 100%; }
+      .brand small{ display:none; }
+      .hero-wide{ min-height: 620px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a class="brand" href="#top" aria-label="Αρχική">
+          <span class="brand-badge" aria-hidden="true"></span>
+          <div>
+            <div>Treasure Hunt Καβάλα</div>
+            <small>Το 1ο Παιχνίδι στην Καβάλα</small>
+          </div>
+        </a>
+
+        <div class="nav-links">
+          <a href="#register">Δήλωση</a>
+          <a href="#faq">FAQ</a>
+          <a href="#contact">Επικοινωνία</a>
+        </div>
+
+        <a class="btn" href="#register">Συμμετοχή</a>
+      </div>
+    </div>
+  </div>
+
+  <main id="top" class="container">
+    <!-- HERO: 1 μεγάλος πίνακας (μόνο αυτό, χωρίς δεξί panel) -->
+    <section class="hero" aria-label="Hero">
+      <div class="hero-wide">
+        <div class="hero-media" aria-hidden="true">
+          <!-- ✅ Η εικόνα βρίσκεται ΜΟΝΟ εδώ (στο 1ο πλαίσιο) -->
+          <img src="./fb40211b-ae5e-4fa2-ac76-e8da66f03a85.png" alt="Treasure Hunt Καβάλα" id="heroImg" />
+        </div>
+
+      <div class="hero-content">
+  <div class="hero-top">
+   
+
+    <h1 class="hero-title">Treasure Hunt Καβάλα<br/>Το 1ο Παιχνίδι στην Καβάλα</h1>
+
+    <p class="hero-sub">
+      Στην Καβάλα κυκλοφορεί ένας παλιός θρύλος:
+      Κάποτε, δύο νεαροί άντρες ανακάλυψαν ένα αρχαίο αντικείμενο κρυμμένο στα στενά της Καβάλας.
+      Κανείς δεν έμαθε ποτέ τι ακριβώς ήταν, μόνο ότι από τη στιγμή που το άγγιξαν, η πόλη άρχισε να αλλάζει.
+      Λίγες μέρες μετά… εξαφανίστηκαν.
+      Το μόνο που βρέθηκε ήταν ένα σημειωματάριο με παράξενους γρίφους και μια φράση γραμμένη με βιασύνη:
+      «Αν κάποιος το βρει… να μην αργήσει. Η κατάρα ξύπνησε.»
+    </p>
+  </div>
+
+  <!-- ✅ ΜΟΝΟ τα 3 πινακάκια (τέρμα κάτω) -->
+  <div class="hero-mini">
+    <div class="mini">
+      <b>Vibe</b>
+      <span>Μυστήριο • περιπέτεια • “είσαι μέσα στην ιστορία”</span>
+    </div>
+    <div class="mini">
+      <b>Διάρκεια</b>
+      <span>1,5 – 2 ώρες (ανάλογα με τον ρυθμό)</span>
+    </div>
+    <div class="mini">
+      <b>Ομάδες</b>
+      <span>Υποχρεωτικά 2 ομάδες • έως 8 άτομα/ομάδα</span>
+    </div>
+  </div>
+</div>
+
+      </div>
+    </section>
+
+    <!-- ΦΟΡΜΑ (ακριβώς κάτω από hero) -->
+    <section id="register" aria-label="Δήλωση Συμμετοχής">
+     
+      <h2 style="margin:10px 0 6px; letter-spacing:-.4px;">Κάνε κράτηση ΤΩΡΑ</h2>
+      <p style="margin:0 0 10px; line-height:1.55; color: rgba(234,240,255,.70);">
+        Διάλεξε ημερομηνία/ώρα και συμπλήρωσε <b>και τις 2 ομάδες</b>.
+        Επιτρέπονται μόνο <b>Τετάρτη/Πέμπτη/Παρασκευή</b> και ώρες <b>18:00 / 19:00 / 20:00</b>.
+      </p>
+
+      <div class="card">
+        <div class="card-pad">
+          <form id="signupForm" method="POST" action="https://formspree.io/f/xdakrjra">
+            <!-- Ημερολόγιο + Ώρα -->
+            <div class="row">
+              <div>
+                <label for="date">Ημερομηνία (μόνο Τετ/Πεμ/Παρ) *</label>
+                <input id="date" name="date" type="date" required />
+                <div class="help" id="dateHelp">Με κλικ ανοίγει ημερολόγιο. Αν διαλέξεις άλλη μέρα, θα σε ενημερώσει.</div>
+              </div>
+              <div>
+                <label for="timeSelect">Ώρα *</label>
+                <select id="timeSelect" name="time" required>
+                  <option value="" selected disabled>Διάλεξε ώρα…</option>
+                  <option value="18:00">18:00</option>
+                  <option value="19:00">19:00</option>
+                  <option value="20:00">20:00</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- 2 ΟΜΑΔΕΣ δίπλα δίπλα (σε κινητό πέφτουν η μία κάτω από την άλλη) -->
+            <div class="row" style="align-items:start; gap:14px;">
+              <!-- ΟΜΑΔΑ Α -->
+              <div class="feature">
+                <span class="pill"><span class="dot"></span> Ομάδα Α </span>
+
+                <label for="teamNameA">Όνομα Ομάδας Α *</label>
+                <input id="teamNameA" name="teamA_name" required placeholder="π.χ. Οι Κυνηγοί" />
+
+                <label for="playersCountA">Αριθμός παικτών (έως 8) *</label>
+                <select id="playersCountA" name="teamA_players_count" required>
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                </select>
+
+                <label for="teamPhoneA">Κινητό Ομάδας Α *</label>
+                <input id="teamPhoneA" name="teamA_phone" inputmode="tel" autocomplete="tel" required placeholder="π.χ. 69xxxxxxxx" />
+
+                <label for="teamEmailA">Email Ομάδας Α *</label>
+                <input id="teamEmailA" name="teamA_email" type="email" autocomplete="email" required placeholder="π.χ. teamA@mail.com" />
+
+                <div class="divider"></div>
+                <span class="pill"><span class="dot"></span> Παίκτες Ομάδας Α</span>
+                <div id="playersWrapA" style="margin-top:8px;"></div>
+                <div class="help">*Συμπλήρωσε όλα τα ονόματα για τον αριθμό παικτών που επέλεξες.</div>
+              </div>
+
+              <!-- ΟΜΑΔΑ Β -->
+              <div class="feature">
+                <span class="pill"><span class="dot"></span> Ομάδα Β </span>
+
+                <label for="teamNameB">Όνομα Ομάδας Β *</label>
+                <input id="teamNameB" name="teamB_name" required placeholder="π.χ. Οι Σκιές" />
+
+                <label for="playersCountB">Αριθμός παικτών (έως 8) *</label>
+                <select id="playersCountB" name="teamB_players_count" required>
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                </select>
+
+                <label for="teamPhoneB">Κινητό Ομάδας Β *</label>
+                <input id="teamPhoneB" name="teamB_phone" inputmode="tel" autocomplete="tel" required placeholder="π.χ. 69xxxxxxxx" />
+
+                <label for="teamEmailB">Email Ομάδας Β *</label>
+                <input id="teamEmailB" name="teamB_email" type="email" autocomplete="email" required placeholder="π.χ. teamB@mail.com" />
+
+                <div class="divider"></div>
+                <span class="pill"><span class="dot"></span> Παίκτες Ομάδας Β</span>
+                <div id="playersWrapB" style="margin-top:8px;"></div>
+                <div class="help">*Συμπλήρωσε όλα τα ονόματα για τον αριθμό παικτών που επέλεξες.</div>
+              </div>
+            </div>
+
+            <label for="notes">Ερωτήσεις / Μήνυμα (προαιρετικά)</label>
+            <textarea id="notes" name="message" placeholder="Γράψτε απορίες, προτίμηση ώρας, περιορισμούς κτλ."></textarea>
+
+            <!-- Anti-bot honeypot -->
+            <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+
+            <div class="divider"></div>
+
+            <div class="row" style="align-items:center">
+              <button class="btn primary" type="submit" id="submitBtn">Υποβολή Δήλωσης</button>
+              <div class="help" id="formHelp">Με την υποβολή θα εμφανιστεί επιβεβαίωση στην οθόνη.</div>
+            </div>
+
+            
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ (τέρμα κάτω, στο menu) -->
+    <section id="faq" aria-label="Συχνές ερωτήσεις">
+      
+      <h2 style="margin:10px 0 14px; letter-spacing:-.4px;">Συχνές ερωτήσεις</h2>
+
+      <details>
+        <summary>Είναι κατάλληλο για αρχάριους;</summary>
+        <p>Ναι. Οι γρίφοι είναι σχεδιασμένοι ώστε να είναι προσβάσιμοι, αλλά να έχουν “wow” στιγμές.</p>
+      </details>
+      <details>
+        <summary>Τι χρειάζεται να έχουμε μαζί μας;</summary>
+        <p>Κινητό με ίντερνετ, άνετα παπούτσια και (ιδανικά) ένα powerbank.</p>
+      </details>
+      <details>
+        <summary>Πόσοι παίκτες είναι ιδανικοί;</summary>
+        <p>2–6. Μέχρι 8 γίνεται, απλά θέλει καλύτερη οργάνωση και καθαρούς ρόλους μέσα στην ομάδα.</p>
+      </details>
+      <details>
+        <summary>Τι γίνεται αν επιλέξω λάθος μέρα;</summary>
+        <p>Το σύστημα θα σε ενημερώσει και θα σου ζητήσει να επιλέξεις μόνο Τετάρτη/Πέμπτη/Παρασκευή.</p>
+      </details>
+    </section>
+
+    <!-- ΕΠΙΚΟΙΝΩΝΙΑ (τέρμα κάτω, στο menu) -->
+    <section id="contact" aria-label="Επικοινωνία">
+      
+      <h2 style="margin:10px 0 14px; letter-spacing:-.4px;">Μίλα μαζί μας</h2>
+
+      <div class="contact-grid">
+        <div class="contact-item">
+          <b>📩 Μέσω της φόρμας</b>
+          <p>
+            Στείλε τη δήλωση και γράψε στο “Μήνυμα” ό,τι χρειάζεται (προτίμηση, ερωτήσεις, κτλ).
+            Θα γίνει επιβεβαίωση από εμάς.
+          </p>
+          <div class="contact-actions">
+            <a class="btn primary" href="#register">Πήγαινε στη Δήλωση</a>
+            
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <b>📱 Τηλέφωνο / Instagram / WhatsApp</b>
+          <p>
+            Αν θέλεις εδώ τηλέφωνο/Instagram/WhatsApp, πες μου τι στοιχεία θες να βάλουμε
+            και στα φτιάχνω με κουμπιά.
+          </p>
+          <div class="help" style="margin-top:10px;">
+            Tip WhatsApp: <br />
+            <span style="color:rgba(234,240,255,.78)">href="https://wa.me/30XXXXXXXXXX"</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <div>© <span id="year"></span> Treasure Hunt Καβάλα</div>
+        <div>Φτιαγμένο με αγάπη από φίλους των παιχνιδιών απόδρασης</div>
+      </div>
+    </footer>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Toast
+    const toast = document.getElementById('toast');
+    let toastTimer = null;
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> toast.classList.remove('show'), 4200);
+    }
+
+    // ====== Ημερολόγιο: min = σήμερα, και επιτρέπουμε μόνο Τετ/Πεμ/Παρ ======
+    const dateInput = document.getElementById('date');
+    const dateHelp  = document.getElementById('dateHelp');
+
+    (function setMinDate(){
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth()+1).padStart(2,'0');
+      const dd = String(today.getDate()).padStart(2,'0');
+      dateInput.min = `${yyyy}-${mm}-${dd}`;
+    })();
+
+    function isAllowedDay(isoDate){
+      const parts = isoDate.split('-').map(Number);
+      if (parts.length !== 3) return false;
+      const [y,m,d] = parts;
+      const dt = new Date(y, m-1, d);
+      const day = dt.getDay(); // 0 Κυρ ... 6 Σαβ
+      return (day === 3 || day === 4 || day === 5); // Τετ/Πεμ/Παρ
+    }
+
+    // ✅ “Με ένα πάτημα να ανοίγει το ημερολόγιο”
+    // Στα περισσότερα κινητά ανοίγει έτσι κι αλλιώς.
+    // Σε desktop, αν ο browser το υποστηρίζει: showPicker()
+    dateInput.addEventListener('pointerdown', () => {
+      if (typeof dateInput.showPicker === 'function') {
+        dateInput.showPicker();
+      } else {
+        dateInput.focus();
+        dateInput.click();
+      }
+    });
+
+    dateInput.addEventListener('change', () => {
+      if (!dateInput.value) return;
+
+      if (!isAllowedDay(dateInput.value)) {
+        showToast('❌ Επιτρέπονται μόνο Τετάρτη, Πέμπτη ή Παρασκευή.');
+        dateHelp.textContent = '❌ Διάλεξε μόνο Τετάρτη/Πέμπτη/Παρασκευή.';
+        dateHelp.style.color = 'rgba(251,113,133,.9)';
+        dateInput.value = '';
+        dateInput.focus();
+        return;
+      }
+
+      dateHelp.textContent = '✅ ΟΚ! Ημέρα αποδεκτή.';
+      dateHelp.style.color = 'rgba(45,212,191,.9)';
+    });
+
+    // ====== Δυναμικά πεδία παικτών ανά ομάδα (Α & Β) ======
+    const playersCountA = document.getElementById('playersCountA');
+    const playersCountB = document.getElementById('playersCountB');
+    const playersWrapA  = document.getElementById('playersWrapA');
+    const playersWrapB  = document.getElementById('playersWrapB');
+
+    function renderPlayersFields(prefix, count, wrap){
+      wrap.innerHTML = '';
+
+      const grid = document.createElement('div');
+      grid.className = 'row';
+      grid.style.marginTop = '10px';
+
+      for(let i=1;i<=8;i++){
+        const col = document.createElement('div');
+        if (i > count) col.style.display = 'none';
+
+        const label = document.createElement('label');
+        label.setAttribute('for', `${prefix}_p${i}`);
+        label.textContent = `Παίκτης ${i} (Όνομα) *`;
+
+        const input = document.createElement('input');
+        input.id = `${prefix}_p${i}`;
+        input.name = `${prefix}_player${i}_name`;
+        input.placeholder = `π.χ. Παίκτης ${i}`;
+        input.autocomplete = 'name';
+        input.required = (i <= count);
+
+        col.appendChild(label);
+        col.appendChild(input);
+        grid.appendChild(col);
+      }
+
+      wrap.appendChild(grid);
+    }
+
+    // initial
+    renderPlayersFields('A', parseInt(playersCountA.value,10), playersWrapA);
+    renderPlayersFields('B', parseInt(playersCountB.value,10), playersWrapB);
+
+    playersCountA.addEventListener('change', () => {
+      const c = parseInt(playersCountA.value,10);
+      renderPlayersFields('A', c, playersWrapA);
+      showToast(`🧩 Ομάδα Α: ${c} παίκτες.`);
+    });
+
+    playersCountB.addEventListener('change', () => {
+      const c = parseInt(playersCountB.value,10);
+      renderPlayersFields('B', c, playersWrapB);
+      showToast(`🧩 Ομάδα Β: ${c} παίκτες.`);
+    });
+
+    // ====== Submit via fetch (stay on page) ======
+    const form      = document.getElementById('signupForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formHelp  = document.getElementById('formHelp');
+
+    form.addEventListener('submit', async (e) => {
+      // έλεγχος ημερομηνίας
+      if (!dateInput.value || !isAllowedDay(dateInput.value)) {
+        e.preventDefault();
+        showToast('❌ Διάλεξε έγκυρη ημερομηνία (Τετ/Πεμ/Παρ).');
+        dateInput.focus();
+        return;
+      }
+
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Υποβολή...';
+
+      try{
+        const formData = new FormData(form);
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if(!res.ok) throw new Error('bad_response');
+
+        form.reset();
+
+        // defaults after reset
+        playersCountA.value = '2';
+        playersCountB.value = '2';
+        renderPlayersFields('A', 2, playersWrapA);
+        renderPlayersFields('B', 2, playersWrapB);
+
+        showToast('✅ Η δήλωση καταχωρήθηκε. Θα υπάρξει επικοινωνία.');
+        formHelp.textContent = '✅ Υποβλήθηκε! Θα υπάρξει επικοινωνία για επιβεβαίωση.';
+        formHelp.style.color = 'rgba(45,212,191,.9)';
+        submitBtn.textContent = 'Υποβλήθηκε';
+      }catch(err){
+        showToast('❌ Κάτι πήγε στραβά. Δοκίμασε ξανά.');
+        formHelp.textContent = '❌ Αποτυχία υποβολής. Έλεγξε το link Formspree στο action.';
+        formHelp.style.color = 'rgba(251,113,133,.9)';
+        submitBtn.textContent = 'Υποβολή Δήλωσης';
+      }finally{
+        setTimeout(()=>{
+          submitBtn.disabled = false;
+          if (submitBtn.textContent === 'Υποβλήθηκε') submitBtn.textContent = 'Υποβολή Δήλωσης';
+        }, 1800);
+      }
+    });
+
+    // ✅ Αν θες να δοκιμάσεις την εικόνα ως background σε όλο το site:
+    // Απλά βάλε αυτή τη γραμμή σε CSS (στο body):
+    // background: linear-gradient(...), var(--brandPhoto) center/cover no-repeat fixed;
+  </script>
+</body>
+</html>
